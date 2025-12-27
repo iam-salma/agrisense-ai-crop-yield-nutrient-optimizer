@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- 🌿 Deficiency Detector (Computer Vision) -->
+<div id="tab2-content" class="glass p-8 glow animate-fade">
+
+    <section class="text-center mb-16 animate-fade">
+        <h1 class="text-5xl font-extrabold bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-lg">
+            🌾 Crop Deficiency Detector (AI Vision)
+        </h1>
+        <p class="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
+            Upload crop leaf images to identify nutrient deficiencies using advanced AI-powered computer vision.
+        </p>
+    </section>
+    
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- 🖼️ Upload Image Card -->
+        <div class="bg-[#001a00]/70 border border-[#00ff88]/20 rounded-2xl shadow-[0_0_25px_#00ff8850] p-8 mb-5 text-gray-200 transition-all duration-300">
+
+        <h2 class="text-2xl font-bold text-green-300 mb-6">📤 Upload Crop Image</h2>
+
+        <form action="{{ url_for('analyze_image') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- Crop Type -->
+            <div>
+            <label for="cropType" class="block text-sm font-semibold text-gray-300 mb-2">Select Crop Type</label>
+            <select name="crop_type" id="cropType" required
+                class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                <option value="">-- Select Crop --</option>
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+                <option value="sugarcane">Sugarcane</option>
+                <option value="cotton">Cotton</option>
+                <option value="potato">Potato</option>
+                <option value="tomato">Tomato</option>
+                <option value="corn">Corn</option>
+                <option value="citrus">Citrus</option>
+                <option value="grape">Grape</option>
+                <option value="apple">Apple</option>
+            </select>
+
+            </div>
+
+            <!-- Image Upload Dropzone -->
+            <div class="border-2 border-dashed border-green-300 hover:border-green-500 rounded-xl p-8 text-center transition">
+            <label for="cropImageUpload" class="cursor-pointer block ">
+                <svg class="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m4-24h8m-4-4v8"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p class="mt-3 text-green-700 font-medium">Click to upload an image</p>
+                <p class="text-xs text-gray-500">PNG or JPG up to 10MB</p>
+            </label>
+            <input type="file" name="file" id="cropImageUpload" accept="image/*" class="hidden" required>
+
+            <!-- Uploaded File Tab (hidden until a file is chosen) -->
+            <div id="uploadFileTab" class="mt-4 hidden items-center justify-between bg-green-900/20 border border-green-800 rounded-full px-4 py-2 flex gap-3">
+                <div class="flex items-center gap-3">
+                    <svg class="h-5 w-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3v4M8 3v4" />
+                    </svg>
+                    <div class="text-left">
+                        <div id="uploadFileName" class="text-sm text-green-100 font-medium">filename.jpg</div>
+                        <div id="uploadFileSize" class="text-xs text-green-200/80">123 KB</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="removeUpload" class="text-xs px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 text-white">Remove</button>
+                </div>
+            </div>
+            </div>
+
+            <!-- Analyze Button -->
+            <button type="submit"
+            class="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 shadow-md hover:shadow-lg transition-all">
+            🔍 Analyze Image
+            </button>
+        </form>
+        </div>
+
+        <!-- 🧠 Analysis Result -->
+        {% if result %}
+        <div
+        class="bg-[#001a00]/70 border border-[#00ff88]/20 rounded-2xl shadow-[0_0_25px_#00ff8850] p-8 mb-5 text-gray-200 transition-all duration-300">
+        <h2 class="text-2xl font-bold text-green-300 mb-6">📋 AI-Powered Analysis Report</h2>
+
+        <div class="mb-6 grid grid-cols-2 md:grid-cols-1 gap-6">
+            <div
+            class="p-4 border border-[#00ff88]/30 rounded-xl bg-[#002b1a]/50 hover:shadow-[0_0_20px_#00ff8880] hover:scale-[1.02] transition-all" style="text-align: center;">
+            <h3 class="font-bold text-green-300" >Predicted Disease</h3>
+            <p class="text-gray-300 my-2">{{ result.predictedDeficiency.replace('_', ' ').title() }}</p>
+            </div>
+
+            <div
+            class="p-4 border border-[#00ff88]/30 rounded-xl bg-[#002b1a]/50 hover:shadow-[0_0_20px_#00ff8880] hover:scale-[1.02] transition-all" style="text-align: center;">
+            <h3 class="font-bold text-green-300">Confidence</h3>
+            <p class="text-gray-300 my-2">{{ result.confidence }}</p>
+            </div>
+        </div>
+
+        <div class="bg-[#002b1a]/60 border border-[#00ff88]/20 rounded-xl p-6 mb-6 shadow-inner">
+            {% if result.gradcam_image %}
+            <h3 class="text-green-300 mb-2">🌟 Grad-CAM Visualization</h3>
+            <div class="flex mt-4 space-x-4">
+                <div class="w-1/2">
+                    <img src="data:image/png;base64,{{ result.uploaded_image }}" alt="Uploaded crop image"
+                    class="rounded-xl border border-[#00ff88]/30 shadow-[0_0_20px_#00ff8850]" style="width: 100%; height: 16rem; object-fit: cover;">
+                </div>
+                <div class="w-1/2">
+                    <img src="data:image/png;base64,{{ result.gradcam_image }}" alt="Grad-CAM visualization"
+                    class="rounded-xl border border-[#00ff88]/30 shadow-[0_0_20px_#00ff8850]" style="width: 100%; height: 16rem; object-fit: cover;">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="text-gray-400 mb-3 text-sm">Based on the analysis, choose whether to fix the issue or continue with
+            current conditions:</p>
+
+        <!-- Fix / Continue Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div
+            class="p-5 border border-[#00ff88]/30 rounded-xl bg-[#002b1a]/50 hover:shadow-[0_0_20px_#00ff8880] hover:scale-[1.02] transition-all">
+            <h3 class="font-bold text-green-300 mb-2">✅ Apply Fix</h3>
+            <ul class="text-sm text-gray-300 space-y-1">
+                <li><strong>Budget:</strong> {{ result.fixBudget }}</li>
+                <li><strong>Yield:</strong> {{ result.fixYield }}</li>
+                <li><strong>Price:</strong> {{ result.fixPrice }}</li>
+            </ul>
+            </div>
+
+            <div
+            class="p-5 border border-gray-600 rounded-xl bg-[#0a0a0a]/50 hover:shadow-[0_0_20px_#00ff8850] hover:scale-[1.02] transition-all">
+            <h3 class="font-bold text-gray-200 mb-2">🚜 Continue As-Is</h3>
+            <ul class="text-sm text-gray-300 space-y-1">
+                <li><strong>Budget:</strong> ₹0</li>
+                <li><strong>Yield:</strong> {{ result.continueYield }}</li>
+                <li><strong>Price:</strong> {{ result.continuePrice }}</li>
+            </ul>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+        (function() {
+        const input = document.getElementById('cropImageUpload');
+        const tab = document.getElementById('uploadFileTab');
+        const nameEl = document.getElementById('uploadFileName');
+        const sizeEl = document.getElementById('uploadFileSize');
+        const removeBtn = document.getElementById('removeUpload');
+
+        function humanSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (file) {
+                nameEl.textContent = file.name;
+                sizeEl.textContent = humanSize(file.size);
+                tab.classList.remove('hidden');
+                console.log('Uploaded file:', file.name, '-', file.type, '-', file.size, 'bytes');
+            } else {
+                tab.classList.add('hidden');
+            }
+        });
+
+        removeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            input.value = '';
+            tab.classList.add('hidden');
+            console.log('Upload cleared');
+        });
+    })();
+</script>
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- 🌿 Nutrient Analyzer -->
+    <section class="text-center mb-16 animate-fade">
+        <h1 class="text-5xl font-extrabold bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-lg">
+            🌱 Smart Nutrient Analyzer
+        </h1>
+        <p class="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
+            Input your soil or tissue test results to receive AI-driven nutrient analysis and fertilizer recommendations.
+        </p>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 ">
+
+        <!-- 🔬 Input Form -->
+    <div class="glass p-8 glow animate-fade">
+        <h2 class="text-2xl font-semibold text-green-300 mb-6 flex items-center gap-2">
+        🧪 Enter Soil Test Results
+        </h2>
+
+        <form action="/analyze-nutrients" method="post" class="space-y-4">
+
+            <!-- Plant and Growth Stage -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label for="analysisPlantName" class="text-sm text-gray-300 font-medium">
+                    Plant Name<span class="text-red-400 ml-1" aria-hidden="true">*</span>
+                </label>
+                <select id="analysisPlantName" name="plant_name" required
+                class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                <option value="">-- Select Crop --</option>
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+                <option value="sugarcane">Sugarcane</option>
+                <option value="cotton">Cotton</option>
+                <option value="potato">Potato</option>
+                <option value="tomato">Tomato</option>
+                <option value="corn">Corn</option>
+                <option value="citrus">Citrus</option>
+                <option value="grape">Grape</option>
+                <option value="apple">Apple</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="analysisGrowthStage" class="text-sm text-gray-300 font-medium">
+                    Growth Stage<span class="text-red-400 ml-1" aria-hidden="true">*</span>
+                </label>
+                <select id="analysisGrowthStage" name="growth_stage" required
+                class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                <option value="">-- Select Stage --</option>
+                <option value="seedling">Seedling</option>
+                <option value="vegetative">Vegetative</option>
+                <option value="flowering">Flowering</option>
+                <option value="fruiting">Fruiting</option>
+                <option value="maturity">Mature</option>
+                </select>
+            </div>
+            </div>
+
+        <!-- Nutrient Inputs -->
+        <div class="space-y-3">
+            <p class="text-sm text-gray-300 font-medium">Enter measured nutrient values (ppm):</p>
+            {% set n_map = {"N":"Nitrogen","P":"Phosphorus","K":"Potassium","Ca":"Calcium","Mg":"Magnesium","S":"Sulfur"} %}
+            {% set defaults = {"N":440,"P":60,"K":50,"Ca":80,"Mg":60,"S":60} %}
+
+            {% for key, val in defaults.items() %}
+                <div>
+                    <label for="nutrient_{{ key|lower }}" class="block text-sm text-gray-300 font-medium mb-2">
+                        {{ n_map[key] }} ({{ key }})<span class="text-red-400 ml-1" aria-hidden="true">*</span>
+                    </label>
+                    <div class="flex items-center">
+                        <input required
+                            type="number"
+                            id="nutrient_{{ key|lower }}"
+                            name="nutrient_{{ key|lower }}"
+                            value="{{ val }}"
+                            step="any"
+                            class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300"
+                        >
+                        <span class="text-gray-400 ml-2">ppm</span>
+                    </div>
+                </div>
+            {% endfor %}
+            <div>
+                <label class="block text-sm text-gray-300 font-medium mb-2">
+                    Soil pH<span class="text-red-400 ml-1" aria-hidden="true">*</span>
+                </label>
+                <input type="floatformat" id="soil_ph" name="soil_ph" value="{{ 7.0 }}" step="any" required
+                        class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                </div>
+                <div class="h-6"></div>
+            <!-- Submit Button -->
+            <button type="submit"
+            class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-600 hover:shadow-lg transition-all duration-300">
+                Generate Nutrient Report
+            </button>
+            </div>
+        </form>
+    </div>
+
+        <!-- 📈 Results Section -->
+        {% if result %}
+        <div id="nutrientReport" class="glass p-8 glow animate-fade border border-[#00ff88]/30">
+
+            <h2 class="text-2xl font-semibold text-green-300 mb-6 flex items-center gap-2">
+                🌿 Nutrient Analysis Report
+            </h2>
+
+            <div class="bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-5 mb-6 shadow-inner hover:shadow-[#00ff88]/20 transition-all duration-300">
+            <h3 class="text-lg font-semibold text-green-300 mb-3">Plant Information</h3>
+            <div class="mb-3"><p class="text-gray-300"><strong>Plant Name: </strong></p> <span class="text-gray-300">{{ result.plant_name }}</span></div>
+            <div class="mb-3"><p class="text-gray-300"><strong>Growth Stage: </strong></p> <span class="text-gray-300">{{ result.growth_stage }}</span></div>
+            <div class="mb-3"><p class="text-gray-300"><strong>Soil pH: </strong></p> <span class="text-gray-300">{{ result.soil_ph }}</span></div>
+            <div class="mb-3"><p class="text-gray-300"><strong>Analysis Date: </strong></p> <span class="text-gray-300">{{ result.analysis_date }}</span></div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-green-300 mb-2">Nutrient Comparison</h3>
+            <!-- Comparison Table -->
+            <div class="overflow-x-auto mb-6">
+                <table class="min-w-full border border-[#00ff88]/20 rounded-lg overflow-hidden shadow-md">
+                    <thead class="bg-[#002b00]/60 border-b border-[#00ff88]/20">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-green-300 uppercase">Nutrient</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-green-300 uppercase">Your Value</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-green-300 uppercase">Ideal Range</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-green-300 uppercase">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#00ff88]/10">
+                        {% for nutrient, value in result.nutrients.items() %}
+                        <tr class="hover:bg-[#003300]/70 transition-colors">
+                            <td class="px-4 py-2 text-sm font-medium text-gray-200">{{ nutrient }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-300">{{ value[0] }} ppm</td>
+                            <td class="px-4 py-2 text-sm text-gray-300">{{ value[1] }} ppm</td>
+                            <td class="px-4 py-2 text-sm">
+                                {% if value[1].split(' - ')[0]|float > value[0]|float %}
+                                    <span class="text-red-400 font-semibold">Deficient</span>
+                                {% elif value[1].split(' - ')[1]|float < value[0]|float %}
+                                    <span class="text-yellow-400 font-semibold">Excess</span>
+                                {% else %}
+                                    <span class="text-green-400 font-semibold">Optimal</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Fertilizer Recommendations -->
+            <div class="bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-5 mb-6 shadow-inner hover:shadow-[#00ff88]/20 transition-all duration-300">
+                <h3 class="text-lg font-semibold text-green-300 mb-3">🌾 Fertilizer Recommendations</h3>
+                <div class="mb-3"><p class="text-gray-300"><strong>Deficiencies: </strong><span class="text-red-400">{{ result.deficiencies | join(', ') }}</span></p></div>
+                <div class="mb-3"><p class="text-gray-300"><strong>Excesses: </strong><span class="text-yellow-400">{{ result.excesses | join(', ') }}</span></p></div>
+                <div class="mb-3">
+                    <p class="text-gray-300 mb-2"><strong>Recommended Fertilizers: </strong></p>
+                    <ul class="text-green-400 font-medium list-disc list-inside">
+                        {% for fertilizer in result.fertilizers %}
+                            <li>{{ fertilizer }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="mt-4 p-2 rounded-lg border-l-4 border-cyan-400 bg-gradient-to-r from-cyan-950/70 to-green-900/60 shadow-lg">
+                        <span class="text-cyan-200 font-semibold">Note:</span>
+                        <span class="text-gray-100">
+                            Always follow manufacturer instructions for application rates.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scientific Explanation -->
+            <div class="bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-5 shadow-inner hover:shadow-[#00ff88]/20 transition-all duration-300">
+                <h3 class="text-lg font-semibold text-green-300 mb-2">🔬 Scientific Analysis</h3>
+                <p class="text-gray-300 leading-relaxed">{{ result.analysis }}</p>
+                <h3 class="text-lg font-semibold text-green-300 mt-4 mb-2">📚 Observations</h3>
+                <p class="text-gray-300 leading-relaxed">{{ result.observations }}</p>
+                <h3 class="text-lg font-semibold text-green-300 mt-4 mb-2">🧑‍🔬 Scientific Basis</h3>
+                <p class="text-gray-300 leading-relaxed">{{ result.scientific_basis }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

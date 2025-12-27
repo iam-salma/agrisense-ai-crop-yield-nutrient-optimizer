@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="text-center animate-fade" style="height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h1 class="text-5xl md:text-7xl font-semibold pb-3 mb-6 bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent">
+        Smart Farming with AI 🌱
+    </h1>
+    <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+        Predict yields, analyze nutrients, and detect plant deficiencies — all powered by AI-driven farming intelligence.
+    </p>
+    <a href="#dashboard" onclick="event.preventDefault(); document.getElementById('dashboard').scrollIntoView({behavior:'smooth', block:'center'});"
+    class="bg-gradient-to-r from-green-400 to-cyan-400 text-black font-semibold py-3 px-8 rounded-full shadow-lg
+            hover:scale-105 hover:shadow-xl
+            transition-all duration-300 ease-in-out">
+    Explore Dashboard →
+    </a>
+</section>
+
+<!-- Dashboard Cards -->
+<section id="dashboard" class="py-20 px-6 grid md:grid-cols-3 gap-10 max-w-6xl mx-auto" >
+    <a href="/yield" class="glass p-8 text-center transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_30px_#00ff8850]">
+        <h4 class="text-2xl font-semibold text-green-300 mb-3">Yield Predictor</h4>
+        <p class="text-gray-300">Estimate your crop yield and market price using real-time soil and weather data.</p>
+    </a>
+
+    <a href="/nutrient" class="glass p-8 text-center transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_30px_#00ff8850]">
+        <h4 class="text-2xl font-semibold text-green-300 mb-3">Nutrient Analyzer</h4>
+        <p class="text-gray-300">Get soil nutrient insights and AI-suggested fertilizers for optimal crop growth.</p>
+    </a>
+
+    <a href="/deficiency" class="glass p-8 text-center transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_30px_#00ff8850]">
+        <h4 class="text-2xl font-semibold text-green-300 mb-3">Deficiency Detector</h4>
+        <p class="text-gray-300">Upload leaf images to detect nutrient deficiencies using AI-powered vision.</p>
+    </a>
+</section>
+
+<!-- Newsletter Section -->
+<div class="mb-10 glass glow animate-fade max-w-4xl mx-auto mt-20 rounded-2xl hover:shadow-[0_0_30px_#00ff8850] transition-all duration-300">
+<section id="newsletter" class="py-20 px-40 text-center bg-gradient-to-b from-transparent to-green-950 animate-fade">
+    <h2 class="text-3xl font-semibold mb-4">Subscribe To Our Newsletter ❤️</h2>
+    <h4 class="text-l md:text-l font-semibold bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent mb-4">Stay Ahead with Farm AI Insights</h4>
+    <p class="text-gray-300 mb-6 max-w-xl mx-auto">
+        Get weekly AI tips, yield improvement techniques, and sustainable farming updates directly in your inbox.
+    </p>
+    <form action="/getmail" method="get" class="flex flex-col sm:flex-row justify-center gap-3 max-w-lg mx-auto">
+        <input type="email" name="email" placeholder="Enter your email" required
+            class="p-3 rounded-full bg-white/10 border border-gray-600 w-full sm:w-auto focus:border-green-400 outline-none" style="min-width: 400px;">
+        <button type="submit"
+                class="bg-gradient-to-r from-green-400 to-cyan-400 text-black font-semibold py-3 px-8 rounded-full hover:scale-105 transition-transform">
+        Subscribe
+        </button>
+    </form>
+</section>
+</div>
+{% endblock %}

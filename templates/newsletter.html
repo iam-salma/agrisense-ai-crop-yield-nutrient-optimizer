@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#001a00] to-[#002200] text-center animate-fade">
+    <div class="bg-[#001a00]/70 border border-[#00ff88]/30 rounded-2xl shadow-[0_0_20px_#00ff8860] p-10 max-w-lg w-full mx-4 backdrop-blur-md">
+
+        <div class="text-5xl mb-6">📬</div>
+        <h1 class="text-3xl font-extrabold text-[#00ff88] mb-4">Subscription Successful!</h1>
+        <p class="text-gray-300 text-lg mb-8">{{ message }}</p>
+
+        <a href="/"
+        class="inline-block bg-gradient-to-r from-green-400 to-cyan-400 text-black font-semibold py-3 px-8 rounded-full shadow-lg hover:scale-105 hover:shadow-[0_0_20px_#00ff88aa] transition-all duration-500 ease-in-out">
+        ⬅ Back to Home
+        </a>
+    </div>
+</div>
+
+{% endblock %}

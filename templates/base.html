@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartFarm AI | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    </head>
+
+    <body class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg shadow-lg border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent">
+            🌿 SmartFarm AI
+        </h1>
+
+        <nav class="space-x-6 text-sm md:text-base">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/yield" class="nav-link">Yield Predictor</a>
+                <a href="/nutrient" class="nav-link">Nutrient Analyzer</a>
+                <a href="/deficiency" class="nav-link">Deficiency Detector</a>
+                <a href="/#newsletter" class="nav-link">
+                    Newsletter
+                </a>
+        </nav>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-grow pt-24 px-6 md:px-12 animate-fade">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center mt-8 py-8 text-gray-400 text-sm border-t border-white/10 bg-black/40 backdrop-blur-md">
+        © 2025 SmartFarm AI — Sustainable Intelligence for the Future of Farming 🌾
+    </footer>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
+

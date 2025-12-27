@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="text-center mb-16 animate-fade">
+    <h1 class="text-5xl font-extrabold bg-gradient-to-r from-green-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-lg">
+        🌾 SmartFarm AI Yield Predictor
+    </h1>
+    <p class="text-gray-300 mt-4 text-lg max-w-2xl mx-auto">
+        Predict your crop yield and market price using AI-driven soil, weather, and nutrient analysis.
+    </p>
+</section>
+
+<!-- Prediction Form + Results -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+    <!-- Input Form -->
+    <div class="glass p-8 glow animate-fade">
+        <h2 class="text-2xl font-semibold text-green-300 mb-6 flex items-center gap-2">
+            🌱 Farm Data Input
+        </h2>
+
+        <form action="/predict" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Crop and Soil -->
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Crop Type<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <select name="cropType" id="cropType" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                    <option value="">-- Select Crop --</option>
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+                <option value="sugarcane">Sugarcane</option>
+                <option value="cotton">Cotton</option>
+                <option value="potato">Potato</option>
+                <option value="tomato">Tomato</option>
+                <option value="corn">Corn</option>
+                <option value="citrus">Citrus</option>
+                <option value="grape">Grape</option>
+                <option value="apple">Apple</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Soil Type<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <select name="soilType" id="soilType" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                    <option value="">-- Select Soil Type --</option>
+                    <option value="Sandy">Sandy</option>
+                    <option value="Clay">Clay</option>
+                    <option value="Loamy">Loamy</option>
+                    <option value="Alluvial">Alluvial</option>
+                    <option value="Peaty">Peaty</option>
+                    <option value="Chalky">Chalky</option>
+                    <option value="Silty">Silty</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Location (State)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <select name="location" id="location" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+                    <option value="">-- Select Location --</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Karnataka">Karnataka</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Soil pH<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="ph" value="6.5" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+
+            <!-- Nutrients -->
+            <div class="col-span-2 mt-3 text-gray-400 font-semibold">Soil Nutrients (kg/ha)</div>
+
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Nitrogen (N)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="n" value="80" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Phosphorus (P)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="p" value="40" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Potassium (K)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="k" value="60" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Magnesium (Mg)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="mg" value="20" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+
+            <!-- Weather -->
+            <div class="col-span-2 mt-3 text-gray-400 font-semibold">Weather (Next 3 Months)<span class="text-red-400 ml-1" aria-hidden="true">*</span></div>
+
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Temperature (°C)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="temp" value="28" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Rainfall (mm)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="rainfall" value="450" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+            <div>
+                <label class="text-sm text-gray-300 font-medium">Humidity (%)<span class="text-red-400 ml-1" aria-hidden="true">*</span></label>
+                <input type="number" step="0.1" name="humidity" value="75" required
+                    class="w-full bg-[#001a00]/60 border border-[#00ff88]/20 rounded-lg p-3 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-[#00ff88] focus:border-[#00ff88] outline-none transition-all duration-300">
+            </div>
+
+            <!-- Button -->
+            <div class="col-span-2 mt-8">
+                <button type="submit"
+                    class="w-full py-3 bg-gradient-to-r from-green-400 to-cyan-400 text-black font-semibold rounded-full hover:scale-105 hover:shadow-[0_0_15px_#00ffbb88] transition-all duration-300">
+                        Predict Yield & Price
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Results Section -->
+    {% if yield_pred and price_pred %}
+    <div class="glass p-8 glow animate-fade">
+        <h2 class="text-2xl font-semibold text-green-300 mb-6 flex items-center gap-2">
+            📊 Prediction Results
+        </h2>
+
+        <!-- Initial Predictions -->
+        <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="glass p-6 rounded-xl border border-green-400/30 hover:scale-105 transition-transform">
+                <span class="block text-sm text-gray-300">Predicted Yield</span>
+                <span class="text-4xl font-bold text-green-400">{{ yield_pred }}</span>
+                <span class="block text-xs text-gray-400 mt-1">tons/hectare</span>
+            </div>
+
+            <div class="glass p-6 rounded-xl border border-cyan-400/30 hover:scale-105 transition-transform">
+                <span class="block text-sm text-gray-300">Market Price</span>
+                <span class="text-4xl font-bold text-cyan-400">{{ price_pred }}</span>
+                <span class="block text-xs text-gray-400 mt-1">per ton</span>
+            </div>
+        </div>
+
+        <!-- NPK Adjustment Section -->
+        <div class="mt-8">
+            <h3 class="text-lg font-semibold text-green-300 mb-4">🧪 Adjust Soil Nutrients </h3>
+
+            <div class="space-y-5">
+                {% for nutrient, color, default, minv, maxv in [
+                    ('Nitrogen (N)', 'green', 80, 0, 200),
+                    ('Phosphorus (P)', 'cyan', 40, 0, 150),
+                    ('Potassium (K)', 'amber', 60, 0, 150),
+                    ('Magnesium (Mg)', 'emerald', 20, 0, 100)
+                ] %}
+                <div>
+                    <label class="flex justify-between text-sm text-gray-300 mb-1">
+                        <span>{{ nutrient }}</span>
+                        <span id="{{ nutrient.split(' ')[0]|lower }}Val" class="text-{{ color }}-400 font-semibold">{{ default }}</span>
+                    </label>
+                    <input type="range" id="{{ nutrient.split(' ')[0]|lower }}" min="{{ minv }}" max="{{ maxv }}" value="{{ default }}" step="1"
+                        class="w-full accent-{{ color }}-400 cursor-pointer"
+                        oninput="updateNutrient('{{ nutrient.split(' ')[0]|lower }}', this.value)">
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Predict Button -->
+            <button onclick="simulatePrediction()"
+                class="bg-gradient-to-r from-green-400 to-cyan-400 text-black font-semibold py-3 px-8 rounded-full shadow-lg
+            hover:scale-105 hover:shadow-xl
+            transition-all duration-300 ease-in-out mt-6">
+                🔄 Predict Now With Updated Nutrient Values
+            </button>
+
+            <!-- Updated Result Display -->
+            <div id="updatedResults" class="grid grid-cols-2 gap-6 mt-8 hidden">
+                <div class="glass p-6 rounded-xl border border-green-400/30 hover:scale-105 transition-transform">
+                    <span class="block text-sm text-gray-300">Updated Yield</span>
+                    <span id="newYield" class="text-4xl font-bold text-green-400"></span>
+                    <span class="block text-xs text-gray-400 mt-1">tons/hectare</span>
+                </div>
+                <div class="glass p-6 rounded-xl border border-cyan-400/30 hover:scale-105 transition-transform">
+                    <span class="block text-sm text-gray-300">Updated Price</span>
+                    <span id="newPrice" class="text-4xl font-bold text-cyan-400"></span>
+                    <span class="block text-xs text-gray-400 mt-1">per ton</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function updateNutrient(id, val) {
+        document.getElementById(id + 'Val').innerText = val;
+    }
+
+    function simulatePrediction() {
+        const n = parseInt(document.getElementById('nitrogen').value);
+        const p = parseInt(document.getElementById('phosphorus').value);
+        const k = parseInt(document.getElementById('potassium').value);
+        const mg = parseInt(document.getElementById('magnesium').value);
+
+        // Mock model (can replace with API call later)
+        let yieldVal = {{ yield_pred }} + ((n + p + k + mg) / 150 - 2);
+        let priceVal = {{ price_pred }} - ((n + p + k + mg) / 90 - 5);
+
+        document.getElementById('updatedResults').classList.remove('hidden');
+        document.getElementById('newYield').innerText = yieldVal.toFixed(2);
+        document.getElementById('newPrice').innerText = priceVal.toFixed(2);
+    }
+    </script>
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

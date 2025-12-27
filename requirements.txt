@@ -1,0 +1,15 @@
+ipykernel
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+opencv-python
+Pillow
+tqdm
+timm
+fastapi
+uvicorn
+jinja2
+python-multipart
+git+https://github.com/jacobgil/pytorch-grad-cam.git
